@@ -28,3 +28,17 @@ public class Vector3Converter : JsonConverter<Vector3>
     }
 }
 
+public class ItemDataConvertor : JsonConverter<ItemData>
+{
+    public override ItemData ReadJson(JsonReader reader, Type objectType, ItemData existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        var id = reader.Value as string;
+        return DataTableManger.ItemTable.Get(id);
+    }
+
+    public override void WriteJson(JsonWriter writer, ItemData value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value.Id);
+    }
+}
+

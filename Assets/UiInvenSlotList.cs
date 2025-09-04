@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using CsvHelper.Configuration.Attributes;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +19,28 @@ public class UiInvenSlotList : MonoBehaviour
     private int itemCount = 0;
 
     private List<SaveItemData> testItemList = new List<SaveItemData>();
+
+    public void Save()
+    {
+        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
+        var json = JsonConvert.SerializeObject(testItemList, Formatting.Indented);
+
+        File.WriteAllText(filePath, json);
+        Debug.Log("Save");
+    }
+
+    public void Load()
+    {
+        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
+        if (File.Exists(filePath))
+        {
+            var json = File.ReadAllText(filePath);
+            testItemList = JsonConvert.DeserializeObject<List<SaveItemData>>(json);
+            UpdateSlots(testItemList);
+            Debug.Log("Load");
+        }
+    }
+
     private void Start()
     {
         for (int i = 0; i < maxCount; ++i)
@@ -37,6 +61,15 @@ public class UiInvenSlotList : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             RemoveItem(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Save();
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Load();
         }
     }
 
